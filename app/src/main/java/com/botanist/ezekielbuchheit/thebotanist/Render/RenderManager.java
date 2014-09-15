@@ -16,13 +16,18 @@ public class RenderManager extends Thread {
     private static RenderManager renderManager = new RenderManager();
     private Context contex;
     private Bitmap characterSprite;
+    private MainScreen mainScreen;
+    private boolean run = true;
 
     public static RenderManager getRenderManager() {
         return renderManager;
     }
 
     public MainScreen getNewSurfaceView(Context c) {
-        return new MainScreen(c);
+        if (mainScreen == null) {
+            mainScreen = new MainScreen(c);
+        }
+        return mainScreen;
     }
 
     public static void renderBackground() {
@@ -33,7 +38,19 @@ public class RenderManager extends Thread {
 
     }
 
-    public class MainScreen extends SurfaceView implements SurfaceHolder.Callback {
+    public void startAnimatingGameWorld() {
+        mainScreen.startThread();
+    }
+
+    public void pauseGameWorld() {
+        mainScreen.pauseThread();
+    }
+
+    public void destroyGameWorld() {
+        mainScreen.surfaceDestroyed(null);
+    }
+
+    private class MainScreen extends SurfaceView implements SurfaceHolder.Callback {
         private SurfaceHolder sh;
         Context context;
         CanvasCreator thread;
@@ -48,8 +65,20 @@ public class RenderManager extends Thread {
 
         public void surfaceCreated(SurfaceHolder holder) {
             thread = new CanvasCreator(sh, context);
-            thread.setRunning(true);
-            thread.start();
+            if (run) {
+                startThread();
+            }
+        }
+
+        public void pauseThread() {
+            run = false;
+        }
+
+        public void startThread() {
+            run = true;
+            if (thread != null && !thread.isAlive()) {
+                thread.start();
+            }
         }
 
         public void surfaceChanged(SurfaceHolder holder, int format, int width,
@@ -58,7 +87,7 @@ public class RenderManager extends Thread {
 
         public void surfaceDestroyed(SurfaceHolder holder) {
             boolean retry = true;
-            thread.setRunning(false);
+            run = false;
             while (retry) {
                 try {
                     thread.join();
@@ -73,17 +102,12 @@ public class RenderManager extends Thread {
 
         private SurfaceHolder sh;
         private Context context;
-        private boolean run = false;
         private Sprite mainCharacter;
 
         public CanvasCreator(SurfaceHolder surfaceHolder, Context context) {
             sh = surfaceHolder;
             this.context = context;
             this.mainCharacter =  (Sprite) new Player(context);
-        }
-
-        public void setRunning(boolean running) {
-            run = running;
         }
 
         public void run() {

@@ -37,6 +37,14 @@ public class MainGameEngine {
     }
 
     public void startWorld() {
+        renderManager.startAnimatingGameWorld();
+    }
 
+    public void pauseWorld() {
+        renderManager.pauseGameWorld();
+    }
+
+    public void destroyWorld() {
+        renderManager.destroyGameWorld();
     }
 }

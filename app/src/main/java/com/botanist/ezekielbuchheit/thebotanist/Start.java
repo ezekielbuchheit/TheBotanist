@@ -29,5 +29,21 @@ public class Start extends Activity {
         setContentView(mainGameEngine.getGameScreen(this));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mainGameEngine.startWorld();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mainGameEngine.pauseWorld();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mainGameEngine.destroyWorld();
+    }
 }
