@@ -1,18 +1,20 @@
 package com.botanist.ezekielbuchheit.thebotanist.SpriteControl;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 
-public interface Sprite {
+public class Sprite {
 
-    //Sprite states for animations
-    public static final String STATIC = "animation_state_static";
-    public static final String FALLING = "animation_state_falling";
-    public static final String JUMPING = "animation_state_jumping";
+    private Bitmap image;
 
-    public static final int X_OFFSET = 64;
-    public static final int Y_OFFSET = 64;
+    public Sprite(Bitmap image)
+    {
+        this.image = image;
+    }
 
-    public Bitmap draw();
-    public void setAnimateState(String state);
-    public void setColloidable(boolean isColloidable);
+    public Bitmap getImage(){return image;}
+
+    public void draw(Canvas canvas, int x, int y) {
+        canvas.drawBitmap(image, x, y, null);
+    }
 }

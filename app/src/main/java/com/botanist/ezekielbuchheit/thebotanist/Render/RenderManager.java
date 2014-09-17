@@ -9,15 +9,15 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
-import com.botanist.ezekielbuchheit.thebotanist.Characters.Player;
-import com.botanist.ezekielbuchheit.thebotanist.SpriteControl.Sprite;
+import com.botanist.ezekielbuchheit.thebotanist.Characters.Entity;
 
 public class RenderManager extends Thread {
     private static RenderManager renderManager = new RenderManager();
     private Context contex;
-    private Bitmap characterSprite;
     private MainScreen mainScreen;
     private boolean run = true;
+    private Entity mainCharacter;
+
 
     public static RenderManager getRenderManager() {
         return renderManager;
@@ -28,6 +28,10 @@ public class RenderManager extends Thread {
             mainScreen = new MainScreen(c);
         }
         return mainScreen;
+    }
+
+    public void setCharacter(Entity mainCharacter) {
+        this.mainCharacter = mainCharacter;
     }
 
     public static void renderBackground() {
@@ -102,12 +106,10 @@ public class RenderManager extends Thread {
 
         private SurfaceHolder sh;
         private Context context;
-        private Sprite mainCharacter;
 
         public CanvasCreator(SurfaceHolder surfaceHolder, Context context) {
             sh = surfaceHolder;
             this.context = context;
-            this.mainCharacter =  (Sprite) new Player(context);
         }
 
         public void run() {
@@ -139,9 +141,7 @@ public class RenderManager extends Thread {
             int width = size.x;
             int height = size.y;
 
-            characterSprite = mainCharacter.draw();
-
-            c.drawBitmap(characterSprite, width/2, height/2, null);
+            mainCharacter.draw(c,width/2, height/2 );
         }
     }
 }
